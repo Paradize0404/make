@@ -11,7 +11,7 @@ MAKE_WEBHOOK_URL = os.getenv("MAKE_WEBHOOK_URL")
 app = FastAPI()
 
 # Настройка логгера
-logging.basicConfig(level=logging.DEBAG)
+logging.basicConfig(level=logging.DEBUG)
 
 @app.post("/")
 async def proxy_to_make(request: Request):
