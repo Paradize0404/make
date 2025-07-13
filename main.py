@@ -3,6 +3,7 @@ import httpx
 import os
 import logging
 from dotenv import load_dotenv
+from fastapi.responses import JSONResponse
 
 load_dotenv()
 
