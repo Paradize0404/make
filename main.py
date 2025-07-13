@@ -14,16 +14,16 @@ app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
 
 @app.post("/")
-async def proxy_to_make(request: Request):
-    data = await request.json()
-    logging.info(f"📥 Получен запрос: {data}")
-
+async def forward_to_make(request: Request):
     try:
+        data = await request.json()
+        logging.info(f"🔁 Получен запрос: {data}")
+        
         async with httpx.AsyncClient() as client:
             response = await client.post(MAKE_WEBHOOK_URL, json=data)
-            logging.info(f"📤 Отправлено в Make, статус: {response.status_code}, тело ответа: {response.text}")
-    except Exception as e:
-        logging.error(f"❌ Ошибка при отправке в Make: {e}")
-        return {"status": "error", "details": str(e)}
+            logging.info(f"✅ Ответ от Make: {response.status_code} - {response.text}")
+            return JSONResponse(content={"status": "ok", "make_response": response.text})
 
-    return {"status": "forwarded", "make_status": response.status_code}
+    except Exception as e:
+        logging.exception("❌ Ошибка при отправке в Make")
+        return JSONResponse(status_code=500, content={"error": str(e)})
